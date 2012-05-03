@@ -14,12 +14,12 @@ Ext.create('Ext.grid.Panel',{
         {
             header   : 'Col 1',
             width    : 100,
-            dataIndex: 'immunization_name'
+            dataIndex: 'col1'
         },
         {
             header   : 'Col 2',
             flex     : 1,
-            dataIndex: 'vis_date'
+            dataIndex: 'col2'
 
         }
     ],
