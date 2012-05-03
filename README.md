@@ -6,7 +6,7 @@ Is a modified version of Ext.grid.plugin.RowEditing
 Is needs a lot of work but this is a good start
 
 Here is an example...
-
+<pre>
 Ext.create('Ext.grid.Panel',{
 	title:'RowEditing Test'
     store   : me.store,
@@ -159,3 +159,4 @@ Ext.create('Ext.grid.Panel',{
         ]
     })
 });
+</pre>
