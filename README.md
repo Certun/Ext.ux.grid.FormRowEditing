@@ -26,12 +26,14 @@ Ext.create('Ext.grid.Panel',{
 	/**
 	* Here is the Plugin...
 	*/
-    plugins: Ext.create('Ex.ux.grid.RowFormEditing', {
+    plugins: Ext.create('Ext.ux.grid.RowFormEditing', {
         autoCancel  : false,
         errorSummary: false,
+        addBtnText: 'Add User',
+        addBtnIconCls: 'iconAdd',
         clicksToEdit: 1,
         enableRemove: true,
-        formItems   : [
+        items: [
             {
                 title : 'general',
                 xtype : 'container',

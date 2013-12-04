@@ -29,7 +29,7 @@
  *
  * @ignore
  */
-Ext.define('App.view.ux.grid.RowFormEditor', {
+Ext.define('Ext.ux.grid.RowFormEditor', {
 	extend: 'Ext.form.Panel',
 	requires: [
 		'Ext.tip.ToolTip',

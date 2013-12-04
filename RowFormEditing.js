@@ -62,7 +62,7 @@
  *         renderTo: Ext.getBody()
  *     });
  */
-Ext.define('App.view.ux.grid.RowFormEditing', {
+Ext.define('Ext.ux.grid.RowFormEditing', {
 	extend: 'Ext.grid.plugin.Editing',
 	alias: 'plugin.rowformediting',
 
