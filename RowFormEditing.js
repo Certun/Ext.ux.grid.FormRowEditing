@@ -12,6 +12,7 @@
  If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
 
  */
+
 /**
  * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
  * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
