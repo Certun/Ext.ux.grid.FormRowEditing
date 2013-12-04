@@ -29,7 +29,7 @@
  *
  * @ignore
  */
-Ext.define('App.ux.grid.RowFormEditor', {
+Ext.define('App.view.ux.grid.RowFormEditor', {
 	extend: 'Ext.form.Panel',
 	requires: [
 		'Ext.tip.ToolTip',
@@ -37,11 +37,12 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		'Ext.util.KeyNav'
 	],
 
-	saveBtnText  : i18n('update'),
-	cancelBtnText: i18n('cancel'),
-	removeBtnText: i18n('remove'),
-	errorsText: i18n('errors'),
-	dirtyText: i18n('commit_cancel_your_changes'),
+	saveBtnText  : 'Update',
+	cancelBtnText: 'Cancel',
+	removeBtnText: 'Remove',
+	errorsText: 'Errors',
+	dirtyText: 'Commit Cancel Your Changes',
+
 	lastScrollLeft: 0,
 	lastScrollTop: 0,
 	bodyPadding: 5,
@@ -52,41 +53,83 @@ Ext.define('App.ux.grid.RowFormEditor', {
 	// Change the hideMode to offsets so that we get accurate measurements when
 	// the roweditor is hidden for laying out things like a TriggerField.
 	hideMode: 'offsets',
+
 	style:'background-color:#E0E0E0',
-	initComponent: function() {
+
+	initComponent: function () {
 		var me = this,
 			form, plugin;
 
 		me.cls = Ext.baseCSSPrefix + 'grid-row-editor grid-row-form-editor';
 		me.currRowH = null;
 		plugin = me.editingPlugin;
-		me.items = plugin.formItems;
+		me.items = plugin.items;
 
-		me.buttons = [{
+		buttons = [{
 			action: 'update',
 			xtype: 'button',
 			handler: plugin.completeEdit,
 			scope: plugin,
 			text: me.saveBtnText,
-			disabled: !me.isValid,
-			minWidth: Ext.panel.Panel.prototype.minButtonWidth
+			disabled: !me.isValid
 		},
 			{
 				xtype: 'button',
 				handler: plugin.cancelEdit,
 				scope: plugin,
-				text: me.cancelBtnText,
-				minWidth: Ext.panel.Panel.prototype.minButtonWidth
+				text: me.cancelBtnText
 			}];
-		if(plugin.enableRemove){
-			me.buttons.push({
+		if (plugin.enableRemove) {
+			buttons.push({
 				xtype: 'button',
 				handler: plugin.completeRemove,
 				scope: plugin,
-				text: me.removeBtnText,
-				minWidth: Ext.panel.Panel.prototype.minButtonWidth
+				text: me.removeBtnText
 			});
 		}
+
+		me.dockedItems = [{
+			xtype: 'toolbar',
+			dock: 'bottom',
+			ui: 'footer',
+			margin: 0,
+			layout:{
+				pack: 'center'
+			},
+			cls: 'x-grid-row-editor x-panel-body',
+			style:'border-top:none !important',
+			defaults: {
+				minWidth: Ext.panel.Panel.prototype.minButtonWidth
+			},
+			items: buttons
+		}];
+
+
+		//        me.buttons = [{
+		//            action: 'update',
+		//            xtype: 'button',
+		//            handler: plugin.completeEdit,
+		//            scope: plugin,
+		//            text: me.saveBtnText,
+		//            disabled: !me.isValid,
+		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
+		//        },
+		//        {
+		//            xtype: 'button',
+		//            handler: plugin.cancelEdit,
+		//            scope: plugin,
+		//            text: me.cancelBtnText,
+		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
+		//        }];
+		//        if(plugin.enableRemove){
+		//            me.buttons.push({
+		//                xtype: 'button',
+		//                handler: plugin.completeRemove,
+		//                scope: plugin,
+		//                text: me.removeBtnText,
+		//                minWidth: Ext.panel.Panel.prototype.minButtonWidth
+		//            });
+		//        }
 
 		me.callParent(arguments);
 		form = me.getForm();
@@ -185,7 +228,8 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		}
 	},
 
-	reposition: function(animateConfig) {
+	reposition: function (animateConfig) {
+
 		if(this.currRowH) this.currRow.setHeight(this.currRowH);
 
 		var me = this,
@@ -371,7 +415,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		return false;
 	},
 
-	setFields: function() {
+	setFields: function(column) {
 		var me = this,
 			form = me.getForm(),
 			fields = form.getFields().items,
@@ -388,12 +432,12 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		var me = this,
 			form = me.getForm(),
 			updateBtn = me.query('button[action="update"]')[0],
-			saveTxt = record.phantom ? 'save' : 'update';
+			saveTxt = record.phantom ? 'Save' : 'Update';
 
 		form.loadRecord(record);
 
 		// change the save btn text to update is the record is a phantom (new)
-		updateBtn.setText(i18n(saveTxt));
+		updateBtn.setText(saveTxt);
 
 		if(me.saveBtnEnabled) updateBtn.setDisabled(!me.saveBtnEnabled);
 
@@ -422,12 +466,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
 	beforeEdit: function() {
 		var me = this;
+
 		me.getGridStores();
+
 		if (me.isVisible() && !me.autoCancel && me.isDirty()) {
 			me.showToolTip();
 			return false;
 		}
-		return true;
 	},
 
 	/**
@@ -435,7 +480,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 	 * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
 	 * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
 	 */
-	startEdit: function(record) {
+	startEdit: function(record, columnHeader) {
 		var me = this,
 			grid = me.editingPlugin.grid,
 			view = grid.getView(),
@@ -450,8 +495,6 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
 		// Reload the record data
 		me.loadRecord(record);
-
-		say(me);
 
 		if (!me.isVisible()) {
 			me.show();
